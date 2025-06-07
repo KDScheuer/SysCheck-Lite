@@ -49,12 +49,12 @@ def create_collector(args) -> object:
 
 
 def gather_info(collector, connector) -> dict:
-    if not connector.connect():
-        print("Connection failed.")
-        return
-
-    system_info = collector.collect(connector)
-    return system_info
+    
+    if connector.connect():
+        system_info = collector.collect(connector)
+        return system_info
+    else:
+        exit(1)
     
 
 def display_results(results) -> None:
