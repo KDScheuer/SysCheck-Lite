@@ -1,5 +1,6 @@
 import argparse
 from getpass import getpass
+import os
 
 from connectors.ssh import SSHConnection
 from collectors.RHELCollector import RHELCollector
@@ -16,12 +17,23 @@ def parse_args() -> object:
 
 
 def create_connector(args) -> object:
-    if args.os in ["rhel",]:
+    ssh_key_path = None
+    if args.key:
+        ssh_key_path = os.path.expandvars(os.path.expanduser(args.key))
+        ssh_key_path = os.path.abspath(ssh_key_path)
+        if not os.path.isfile(ssh_key_path):
+            raise FileNotFoundError(f"SSH key file not found: {ssh_key_path}")
+    
+    password = None
+    if not ssh_key_path:
         password = getpass("Enter SSH Password: ")
+        
+    if args.os in ["rhel",]:
         connector = SSHConnection(
             host=args.host,
             user=args.user,
             password=password,
+            key_path=ssh_key_path,
         )
     else:
        raise ValueError(f"Unsupported OS: {args.os}")
