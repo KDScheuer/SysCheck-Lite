@@ -56,9 +56,6 @@ def display_results(results) -> None:
                 print(f"{GREEN} - {sub_key}{RESET}: {sub_value}")
         else:
             print(f"{GREEN}{key}{RESET}: {value}")
-    # print("\nSystem Info:")
-    # for key, value in results.items():
-    #     print(f"{key}: {value}")    
 
 
 def main() -> None:
