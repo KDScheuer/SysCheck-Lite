@@ -13,9 +13,11 @@ class RHELCollector:
             "CPU Usage": connector.run_command("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4 \"% used\"}'").strip(),
             "Memory Usage": connector.run_command("free | awk '/Mem:/ { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'").strip(),
             "Swap Usage": connector.run_command("free | awk '/Swap:/ && $2 > 0 { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'").strip(),
-            "Last DNF Update": connector.run_command("stat -c %y /var/log/dnf.rpm.log").strip()
-
+            "Last DNF Update": connector.run_command("stat -c %y /var/log/dnf.rpm.log").strip(),
         }
+
+        disk_usage =  "\n" + connector.run_command("df -h --output=source,size,used,avail,pcent,target").strip()
+        system_info["Disk Usage"] = "\n".join(["   " + line for line in disk_usage.split('\n')])
 
         if self.services:
             all_services = connector.run_command("systemctl list-units --type=service --no-pager --no-legend").splitlines()

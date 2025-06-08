@@ -24,7 +24,7 @@ class SSHConnection:
             return True
         
         except Exception as e:
-            print(f"\033[91m[!] SSH connection error: {e}\033[0m")
+            print(f"\n\033[91m[!] SSH connection error: {e}\033[0m")
             return False
 
     def run_command(self, command: str) -> str:
