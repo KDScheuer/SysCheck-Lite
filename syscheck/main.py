@@ -80,8 +80,7 @@ def validate_required_args(args) -> object:
         args.os = input("Enter OS (rhel, windows, ubuntu): ").strip()
     
     if not args.host or not args.user or not args.os:
-        print("\n\033[91m[!] Required Arguments not provieded\033[0m")
-        exit(1)
+        raise ValueError("Required Arguments not provieded")
 
     return args
     
@@ -101,3 +100,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\033[93mProgram exited by user (Ctrl+C).\033[0m")
         exit(0)
+    except ValueError as e:
+        print(f"\n\033[91m[!] {e}\033[0m")
+        exit(1)
+    except ConnectionError as e:
+        print(f"\n\033[91m[!] {e}\033[0m")
