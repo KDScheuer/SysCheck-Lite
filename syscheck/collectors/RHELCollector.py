@@ -26,6 +26,8 @@ class RHELCollector:
             "Memory Usage": connector.run_command("free | awk '/Mem:/ { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'").strip(),
             "Swap Usage": connector.run_command("free | awk '/Swap:/ && $2 > 0 { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'").strip(),
             "Last DNF Update": connector.run_command("stat -c %y /var/log/dnf.rpm.log").strip(),
+            "TimeZone": connector.run_command("timedatectl show -p Timezone --value").strip(),
+            "SELinux Status": connector.run_command("getenforce").strip(),
         }
 
         disk_usage =  "\n" + connector.run_command("df -h --output=source,size,used,avail,pcent,target").strip()
