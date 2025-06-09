@@ -33,12 +33,11 @@ class WinRMConnection:
             raise RuntimeError("WinRM client not connected")
 
         try:
-            result = self.client.run_cmd(command)
+            result = self.client.run_ps(command)
             stdout = result.std_out.decode().strip()
-            stderr = result.std_err.decode().strip()
 
-            if result.status_code != 0 or stderr:
-                return "ERROR_COLLECTING"
+            # if result.status_code != 0:
+            #     return "ERROR_COLLECTING"
 
             return stdout if stdout else "NO_OUTPUT"
 

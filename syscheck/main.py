@@ -3,8 +3,9 @@ from getpass import getpass
 import os
 
 from connectors.ssh import SSHConnection
+from connectors.winrm import WinRMConnection
 from collectors.RHELCollector import RHELCollector
-
+from collectors.WindowsCollector import WindowsCollector
 
 def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
@@ -26,14 +27,21 @@ def create_connector(args) -> object:
     
     password = None
     if not ssh_key_path:
-        password = getpass("Enter SSH Password: ")
+        password = getpass("Enter Password: ")
         
-    if args.os in ["rhel",]:
+    if args.os in ["rhel", "rocky",]:
         connector = SSHConnection(
             host=args.host,
             user=args.user,
             password=password,
             key_path=ssh_key_path,
+        )
+    elif args.os in ["windows",]:
+        connector = WinRMConnection(
+            host=args.host,
+            user=args.user,
+            password=password,
+            domain=args.domain
         )
     else:
        raise ValueError(f"Unsupported OS: {args.os}")
@@ -42,8 +50,10 @@ def create_connector(args) -> object:
 
 
 def create_collector(args) -> object:
-    if args.os == "rhel":
+    if args.os in ["rhel", "rocky"]:
         return RHELCollector(services=args.services)
+    elif args.os in ["windows"]:
+        return WindowsCollector(services=args.services)
     
     raise ValueError(f"No collector implemented for OS: {args.os}")
 
@@ -54,7 +64,7 @@ def gather_info(collector, connector) -> dict:
         system_info = collector.collect(connector)
         return system_info
     else:
-        exit(1)
+        raise ConnectionError("Failed to connect to target")
     
 
 def display_results(results) -> None:
@@ -72,15 +82,21 @@ def display_results(results) -> None:
 
 def validate_required_args(args) -> object:
     
+    if not args.os:
+        args.os = input("Enter OS (rhel, windows, ubuntu): ").strip()
+    if args.os == "windows":
+        domain_input = input("Enter Domain (leave blank if none): ").strip()
+        args.domain = domain_input if domain_input else None
+    else:
+        args.domain = None
     if not args.host:
         args.host = input("Enter Target Host: ").strip()
     if not args.user:
         args.user = input("Enter username: ").strip()
-    if not args.os:
-        args.os = input("Enter OS (rhel, windows, ubuntu): ").strip()
+    
     
     if not args.host or not args.user or not args.os:
-        raise ValueError("Required Arguments not provieded")
+        raise ValueError("Required arguments not provided")
 
     return args
     
