@@ -9,6 +9,8 @@ from syscheck.collectors.RHELCollector import RHELCollector
 from syscheck.collectors.WindowsCollector import WindowsCollector
 from syscheck.formatter.TerminalFormatter import to_terminal
 from syscheck.formatter.htmlFormatter import to_html
+from syscheck.formatter.jsonFormatter import to_json
+
 
 def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
@@ -19,7 +21,7 @@ def parse_args() -> object:
     parser.add_argument("-s", "--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
     parser.add_argument('--version', action='version', version=f"SysCheck-Lite {syscheck.__version__}")
     parser.add_argument("-d", "--domain", help="Target Domain for Authentication with Username")
-    parser.add_argument("-O", "--output", choices=["terminal", "html"], help="How to display the results.")
+    parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], help="How to display the results.")
     return parser.parse_args()
 
 
@@ -105,6 +107,8 @@ def main() -> None:
         to_terminal(results)
     elif args.output == "html":
         to_html(results, args.host)
+    elif args.output == "json":
+        to_json(results)
 
 
 def cli_entry_point():
