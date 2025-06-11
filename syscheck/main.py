@@ -103,12 +103,12 @@ def main() -> None:
     collector = create_collector(args)
     results = gather_info(collector, connector)
 
-    if args.output == None or args.output == "terminal":
-        to_terminal(results)
-    elif args.output == "html":
+    if args.output == "html":
         to_html(results, args.host)
     elif args.output == "json":
         to_json(results)
+    else:
+        to_terminal(results)
 
 
 def cli_entry_point():
