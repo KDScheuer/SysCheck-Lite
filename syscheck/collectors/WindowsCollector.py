@@ -53,14 +53,14 @@ class WindowsCollector:
             "Get-PSDrive -PSProvider 'FileSystem' | Select-Object Name,Used,Free | ForEach-Object {\"{0}: Used: {1} Free: {2}\" -f $_.Name,($_.Used / 1GB -as [int]),($_.Free / 1GB -as [int])}", "Collecting Disk Usage"
         ).strip()
 
-        system_info["Disk Usage"] = "\n   " + "\n   ".join(disk_usage.splitlines())
+        system_info["Disk Usage"] = disk_usage.splitlines()
 
         # Get last 10 error events from System log
         system_errors = connector.run_command(
             "Get-EventLog -LogName System -EntryType Error -Newest 10 | Format-Table TimeGenerated,Source,EventID,Message -AutoSize | Out-String", "Collecitng System Error Log"
         ).strip()
 
-        system_info["Last 10 System Errors"] = "\n   " + "\n   ".join(system_errors.splitlines())
+        system_info["Last 10 System Errors"] = system_errors.splitlines()
 
         if self.services:
             # Get list of services

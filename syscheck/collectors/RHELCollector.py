@@ -30,11 +30,11 @@ class RHELCollector:
             "SELinux Status": connector.run_command("getenforce").strip(),
         }
 
-        disk_usage =  "\n" + connector.run_command("df -h --output=source,size,used,avail,pcent,target").strip()
-        system_info["Disk Usage"] = "\n".join(["   " + line for line in disk_usage.split('\n')])
+        disk_usage =  connector.run_command("df -h --output=source,size,used,avail,pcent,target").strip()
+        system_info["Disk Usage"] = [line for line in disk_usage.split('\n')]
 
-        system_errors = "\n" + connector.run_command("journalctl -p 3 -n 10 --no-pager").strip()
-        system_info["Last 10 Journalctl Errors"] = "\n" + "\n".join(["   " + line for line in system_errors.split('\n') if line != ""])
+        system_errors = connector.run_command("journalctl -p 3 -n 10 --no-pager").strip()
+        system_info["Last 10 Journalctl Errors"] = [line for line in system_errors.split('\n')]
 
         if self.services:
             all_services = connector.run_command("systemctl list-units --type=service --no-pager --no-legend").splitlines()

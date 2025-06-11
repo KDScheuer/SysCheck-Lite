@@ -7,6 +7,7 @@ from syscheck.connectors.ssh import SSHConnection
 from syscheck.connectors.winrm import WinRMConnection
 from syscheck.collectors.RHELCollector import RHELCollector
 from syscheck.collectors.WindowsCollector import WindowsCollector
+from syscheck.formatter.TerminalFormatter import to_terminal
 
 def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
@@ -68,19 +69,6 @@ def gather_info(collector, connector) -> dict:
         return system_info
     else:
         raise ConnectionError("Failed to connect to target")
-    
-
-def display_results(results) -> None:
-    GREEN = "\033[92m"
-    RESET = "\033[0m"
-    print(f"\n{GREEN}System Info:{RESET}")
-    for key, value in results.items():
-        if isinstance(value, dict):
-            print(f"{GREEN}{key.capitalize()}{RESET}:")
-            for sub_key, sub_value in value.items():
-                print(f"{GREEN} - {sub_key}{RESET}: {sub_value}")
-        else:
-            print(f"{GREEN}{key}{RESET}: {value}")
 
 
 def validate_required_args(args) -> object:
@@ -110,7 +98,8 @@ def main() -> None:
     connector = create_connector(args)
     collector = create_collector(args)
     results = gather_info(collector, connector)
-    display_results(results)
+    print(results)
+    to_terminal(results)
 
 
 def cli_entry_point():
