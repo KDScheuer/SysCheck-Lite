@@ -1,3 +1,11 @@
+<p align="center">
+
+  ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
+  ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-blue)
+  ![License](https://img.shields.io/badge/License-MIT-green)
+  ![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
+</p>
+
 # SysCheck-Lite
 Simple CLI tool to quickly check the health and status of a remote server.
 
@@ -12,8 +20,8 @@ Arguments are optional when running the command, if none are provided it will in
 | `-k`, `--key`        | SSH private key file path for passwordless authentication                   |
 | `-s`, `--services`   | List of services to query (supports wildcards, e.g., `*sql*`, `http*`)      |
 | `-d`, `--domain`     | Domain name for authentication (Windows only)                               |
+| `-h`, `--help`       | Display Help                                                                |
 | `--version`          | Display the current version of SysCheck-Lite                                |
-|`-h`, `--help`        | Display Help                                                                |
 
 
 ## General Collection Notes
