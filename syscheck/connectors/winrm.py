@@ -28,9 +28,12 @@ class WinRMConnection:
         except Exception as e:
             raise ConnectionError(f"Failed to connect to {self.host} via WinRM: {e}")
         
-    def run_command(self, command: str) -> str:
+    def run_command(self, command: str, log = "") -> str:
         if not self.client:
             raise RuntimeError("WinRM client not connected")
+        
+        if log:
+            print(f"{log}                                     ", end="\r", flush=True)
 
         try:
             result = self.client.run_ps(command)
