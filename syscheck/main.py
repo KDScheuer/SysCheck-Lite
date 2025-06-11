@@ -10,13 +10,13 @@ from syscheck.collectors.WindowsCollector import WindowsCollector
 
 def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
-    parser.add_argument("--host", help="Target Hostname or IP Address")
+    parser.add_argument("-H", "--host", help="Target Hostname or IP Address")
     parser.add_argument("-u", "--user", help="Username to connect with")
-    parser.add_argument("--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine")
-    parser.add_argument("--key", help="SSH Private Key for connection ")
-    parser.add_argument("--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
+    parser.add_argument("-o", "--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine")
+    parser.add_argument("-k", "--key", help="SSH Private Key for connection ")
+    parser.add_argument("-s", "--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
     parser.add_argument('--version', action='version', version=f"SysCheck-Lite {syscheck.__version__}")
-    parser.add_argument("--domain", help="Target Domain for Authentication with Username")
+    parser.add_argument("-d", "--domain", help="Target Domain for Authentication with Username")
     return parser.parse_args()
 
 
@@ -87,7 +87,7 @@ def validate_required_args(args) -> object:
     
     if not args.os:
         args.os = input("Enter OS (rhel, windows, ubuntu): ").strip()
-    if args.os == "windows":
+    if args.os == "windows" and args.domain == None:
         domain_input = input("Enter Domain (leave blank if none): ").strip()
         args.domain = domain_input if domain_input else None
     else:
