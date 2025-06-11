@@ -49,6 +49,6 @@ class RHELCollector:
                 status = connector.run_command(f"systemctl is-active {service}").strip()
                 status_results[service] = status
 
-            system_info["services"] = status_results
+            system_info["Services"] = status_results
 
         return system_info
