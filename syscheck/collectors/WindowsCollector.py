@@ -79,6 +79,7 @@ class WindowsCollector:
                 ).strip()
                 status_results[service] = status
 
-            system_info["services"] = status_results
+            system_info["services"] = status_results if status_results else "No matching services found"
+
 
         return system_info
