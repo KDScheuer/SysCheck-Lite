@@ -2,10 +2,11 @@ import argparse
 from getpass import getpass
 import os
 
-from connectors.ssh import SSHConnection
-from connectors.winrm import WinRMConnection
-from collectors.RHELCollector import RHELCollector
-from collectors.WindowsCollector import WindowsCollector
+import syscheck
+from syscheck.connectors.ssh import SSHConnection
+from syscheck.connectors.winrm import WinRMConnection
+from syscheck.collectors.RHELCollector import RHELCollector
+from syscheck.collectors.WindowsCollector import WindowsCollector
 
 def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
@@ -14,6 +15,8 @@ def parse_args() -> object:
     parser.add_argument("--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine")
     parser.add_argument("--key", help="SSH Private Key for connection ")
     parser.add_argument("--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
+    parser.add_argument('--version', action='version', version=f"SysCheck-Lite {syscheck.__version__}")
+    parser.add_argument("--domain", help="Target Domain for Authentication with Username")
     return parser.parse_args()
 
 

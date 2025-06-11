@@ -18,14 +18,10 @@
 - [] HTML Output
 - [] JSON Output
 - [X] Rich Output (Default)
-
-## Improvements
  
 ## Error Handling
 - [] Error handling for if a command returns nothing (using RHEL Colelctor on Fedora or something and some commands failing)
 
-## Release
-- [] Figure out how to package up
-- [] Deploy to PIP
-- [] Complete Read Me
-- [] See about making it in the PATH / deploy script or something to add this as just a command that can be run
+## Improvements
+- [X] Logging as Collection Occurs for WinRM Connector
+- [] Logging as Collection Occurs for SSH Connector
