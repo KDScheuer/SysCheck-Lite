@@ -108,9 +108,9 @@ def main() -> None:
     collector = create_collector(args)
     results = gather_info(collector, connector)
     display_results(results)
-        
 
-if __name__ == "__main__":
+
+def cli_entry_point():
     try:
         main()
     except KeyboardInterrupt:
@@ -121,3 +121,8 @@ if __name__ == "__main__":
         exit(1)
     except ConnectionError as e:
         print(f"\n\033[91m[!] {e}\033[0m")
+        exit(1)
+
+
+if __name__ == "__main__":
+    cli_entry_point()
