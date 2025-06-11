@@ -28,12 +28,16 @@ class SSHConnection:
             # print(f"\n\033[91m[!] SSH connection error: {e}\033[0m")
             return False
 
-    def run_command(self, command: str) -> str:
+    def run_command(self, command: str, log = "") -> str:
         if not self.client:
             raise RuntimeError("SSH client not connected")
 
         try:
+            if log:
+                print(log, end="\r", flush=True)
             stdin, stdout, stderr = self.client.exec_command(command)
+            if log:
+                print("                                                         ", end="\r", flush=True)
             return stdout.read().decode().strip()
         except Exception as e:
             print(f"[!] Error executing command '{command}': {e}")

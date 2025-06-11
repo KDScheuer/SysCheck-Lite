@@ -15,13 +15,14 @@
 - [] Profiles / Saved Configs for a Server
 - [X] SSH Key Authentication
   - [] Tab Complete Paths
-- [] HTML Output
-- [] JSON Output
+- [X] HTML Output
+- [X] JSON Output
 - [X] Rich Output (Default)
  
 ## Error Handling
 - [] Error handling for if a command returns nothing (using RHEL Colelctor on Fedora or something and some commands failing)
+- [] Error handling for improper ssh key path
 
 ## Improvements
 - [X] Logging as Collection Occurs for WinRM Connector
-- [] Logging as Collection Occurs for SSH Connector
+- [X] Logging as Collection Occurs for SSH Connector
