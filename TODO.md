@@ -8,8 +8,8 @@
 - [] Ubuntu Collector
 
 ### Windows Collection
-- [] WinRM Connector
-- [] Windows Server Collector
+- [X] WinRM Connector
+- [X] Windows Server Collector
 
 ## Ease of Use
 - [] Profiles / Saved Configs for a Server
@@ -23,7 +23,6 @@
  
 ## Error Handling
 - [] Error handling for if a command returns nothing (using RHEL Colelctor on Fedora or something and some commands failing)
-- [] If Pass is not provided mayber a way to then enter a ssh key
 
 ## Release
 - [] Figure out how to package up
