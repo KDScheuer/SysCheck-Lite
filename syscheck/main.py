@@ -1,5 +1,4 @@
 import argparse
-import argcomplete
 from getpass import getpass
 import os
 
@@ -19,13 +18,13 @@ def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
     parser.add_argument("-H", "--host", help="Target Hostname or IP Address")
     parser.add_argument("-u", "--user", help="Username to connect with")
-    parser.add_argument("-o", "--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine").completer = argcomplete.completers.ChoicesCompleter(["windows", "rhel", "debian", "ubuntu"])
-    parser.add_argument("-k", "--key", help="SSH Private Key for connection ").completer = argcomplete.completers.FilesCompleter()
+    parser.add_argument("-o", "--os", choices=["windows", "rhel", "debian", "ubuntu"], type=str.lower, help="Target is a Windows based machine")
+    parser.add_argument("-k", "--key", help="SSH Private Key for connection ")
     parser.add_argument("-s", "--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
     parser.add_argument('--version', action='version', version=f"SysCheck-Lite {syscheck.__version__}")
     parser.add_argument("-d", "--domain", help="Target Domain for Authentication with Username")
-    parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], help="How to display the results.").completer = argcomplete.completers.ChoicesCompleter(["terminal", "html", "json"])
-    argcomplete.autocomplete(parser)
+    parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], type=str.lower, help="How to display the results.")
+    parser.add_argument("-p", "--password", help="Password used to authenticate with the target host")
     return parser.parse_args()
 
 
@@ -82,7 +81,7 @@ def gather_info(collector, connector) -> dict:
 def validate_required_args(args) -> object:
     
     if not args.os:
-        args.os = input("Enter OS (rhel, windows, ubuntu): ").strip()
+        args.os = input("Enter OS (rhel, windows, ubuntu): ").strip().lower()
     if args.os == "windows" and args.domain == None:
         domain_input = input("Enter Domain (leave blank if none): ").strip()
         args.domain = domain_input if domain_input else None
