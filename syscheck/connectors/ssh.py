@@ -40,8 +40,8 @@ class SSHConnection:
                 print("                                                         ", end="\r", flush=True)
             return stdout.read().decode().strip()
         except Exception as e:
-            print(f"[!] Error executing command '{command}': {e}")
-            return ""
+            print(f"[!] Error {log} : {e}")
+            return "Error Collecting"
 
     def close(self):
         if self.client:

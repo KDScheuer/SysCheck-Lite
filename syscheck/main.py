@@ -1,4 +1,5 @@
 import argparse
+import argcomplete
 from getpass import getpass
 import os
 
@@ -18,12 +19,13 @@ def parse_args() -> object:
     parser = argparse.ArgumentParser( description="SysCheck-Lite: Collects Basic System Info and Provides Report")
     parser.add_argument("-H", "--host", help="Target Hostname or IP Address")
     parser.add_argument("-u", "--user", help="Username to connect with")
-    parser.add_argument("-o", "--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine")
-    parser.add_argument("-k", "--key", help="SSH Private Key for connection ")
+    parser.add_argument("-o", "--os", choices=["windows", "rhel", "debian", "ubuntu"], help="Target is a Windows based machine").completer = argcomplete.completers.ChoicesCompleter(["windows", "rhel", "debian", "ubuntu"])
+    parser.add_argument("-k", "--key", help="SSH Private Key for connection ").completer = argcomplete.completers.FilesCompleter()
     parser.add_argument("-s", "--services", nargs="*", help="Service name(s) to check, supports wildcards (e.g. '*sql*' or 'nginx mysql')")
     parser.add_argument('--version', action='version', version=f"SysCheck-Lite {syscheck.__version__}")
     parser.add_argument("-d", "--domain", help="Target Domain for Authentication with Username")
-    parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], help="How to display the results.")
+    parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], help="How to display the results.").completer = argcomplete.completers.ChoicesCompleter(["terminal", "html", "json"])
+    argcomplete.autocomplete(parser)
     return parser.parse_args()
 
 
@@ -128,6 +130,8 @@ def cli_entry_point():
     except ConnectionError as e:
         print(f"\n\033[91m[!] {e}\033[0m")
         exit(1)
+    except FileNotFoundError as e:
+        print(f"\n\033[91m[!] {e}\033[0m")
 
 
 if __name__ == "__main__":
