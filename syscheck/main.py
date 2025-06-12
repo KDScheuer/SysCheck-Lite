@@ -98,19 +98,22 @@ def validate_required_args(args) -> object:
     return args
     
 
-def main() -> None:
-    args = parse_args()
-    args = validate_required_args(args)
-    connector = create_connector(args)
-    collector = create_collector(args)
-    results = gather_info(collector, connector)
-
+def display_results(results, args) -> None:
     if args.output == "html":
         to_html(results, args.host)
     elif args.output == "json":
         to_json(results)
     else:
         to_terminal(results)
+
+
+def main() -> None:
+    args = parse_args()
+    args = validate_required_args(args)
+    connector = create_connector(args)
+    collector = create_collector(args)
+    results = gather_info(collector, connector)
+    display_results(results, args)
 
 
 def cli_entry_point():

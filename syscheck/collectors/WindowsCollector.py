@@ -50,7 +50,7 @@ class WindowsCollector:
         }
 
         disk_usage = connector.run_command(
-            "Get-PSDrive -PSProvider 'FileSystem' | Select-Object Name,Used,Free | ForEach-Object {\"{0}: Used: {1} Free: {2}\" -f $_.Name,($_.Used / 1GB -as [int]),($_.Free / 1GB -as [int])}", "Collecting Disk Usage"
+            "Get-PSDrive -PSProvider 'FileSystem' | Select-Object Name,Used,Free | ForEach-Object {\"{0}: Used: {1}G Free: {2}G\" -f $_.Name,($_.Used / 1GB -as [int]),($_.Free / 1GB -as [int])}", "Collecting Disk Usage"
         ).strip()
 
         system_info["Disk Usage"] = disk_usage.splitlines()
