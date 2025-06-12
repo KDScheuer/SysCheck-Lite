@@ -5,8 +5,10 @@ import os
 import syscheck
 from syscheck.connectors.ssh import SSHConnection
 from syscheck.connectors.winrm import WinRMConnection
+
 from syscheck.collectors.RHELCollector import RHELCollector
 from syscheck.collectors.WindowsCollector import WindowsCollector
+
 from syscheck.formatter.TerminalFormatter import to_terminal
 from syscheck.formatter.htmlFormatter import to_html
 from syscheck.formatter.jsonFormatter import to_json

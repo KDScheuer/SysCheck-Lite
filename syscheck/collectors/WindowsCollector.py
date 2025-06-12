@@ -57,9 +57,10 @@ class WindowsCollector:
 
         # Get last 10 error events from System log
         system_errors = connector.run_command(
-            "Get-EventLog -LogName System -EntryType Error -Newest 10 | Format-Table TimeGenerated,Source,EventID,Message -AutoSize | Out-String", "Collecitng System Error Log"
+            'Get-EventLog -LogName System -EntryType Error -Newest 10 | '
+            'ForEach-Object { "$($_.TimeGenerated) [$($_.EventID)] $($_.Message)`n" }',
+            "Collecting System Error Log"
         ).strip()
-
         system_info["Last 10 System Errors"] = system_errors.splitlines()
 
         if self.services:
