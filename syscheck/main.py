@@ -1,6 +1,7 @@
 import argparse
-from getpass import getpass
 import os
+from getpass import getpass
+from pathlib import Path
 
 import syscheck
 from syscheck.connectors.ssh import SSHConnection
@@ -25,7 +26,53 @@ def parse_args() -> object:
     parser.add_argument("-d", "--domain", help="Target Domain for Authentication with Username")
     parser.add_argument("-O", "--output", choices=["terminal", "html", "json"], type=str.lower, help="How to display the results.")
     parser.add_argument("-p", "--password", help="Password used to authenticate with the target host")
+    parser.add_argument("-P", "--profile", help="Load a saved profile with connection settings. CLI Input will take priority over the values in the profile")
+    parser.add_argument("-C", "--createprofile", help="Save arguments into profile for use later.")
     return parser.parse_args()
+
+
+def load_profile_file(profile_name: str) -> dict:
+    profile_dir = Path.home() / "syscheck_profiles"
+    profile_path = profile_dir / f"{profile_name}.profile"
+    if not profile_path.exists():
+        raise FileNotFoundError(f"Profile '{profile_name}' not found at {profile_path}")
+
+    profile_data = {}
+    with profile_path.open() as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            profile_data[key.strip()] = value.strip()
+
+    # handle list fields like "services"
+    if "services" in profile_data:
+        profile_data["services"] = profile_data["services"].split(",")
+
+    return profile_data
+
+
+def create_profile_file(profile_name: str, args) -> None:
+    profile_dir = Path.home() / "syscheck_profiles"
+    profile_dir.mkdir(exist_ok=True)
+
+    profile_path = profile_dir / f"{profile_name}.profile"
+    with profile_path.open("w") as f:
+        f.write("# SysCheck-Lite Profile\n")
+        for key in vars(args):
+            if key in ["createprofile", "profile", "password"]:  # Exclude sensitive or meta args
+                continue
+            value = getattr(args, key)
+            if value is None:
+                continue
+            if isinstance(value, list):
+                value = ",".join(value)
+            f.write(f"{key}={value}\n")
+    
+    print(f"\n\033[92mProfile '{profile_name}' saved to {profile_path}\033[0m")
 
 
 def create_connector(args) -> object:
@@ -110,6 +157,14 @@ def display_results(results, args) -> None:
 
 def main() -> None:
     args = parse_args()
+    if args.profile:
+        profile_data = load_profile_file(args.profile)
+        for key, value in profile_data.items():
+            if getattr(args, key, None) is None:
+                setattr(args, key, value)
+    if args.createprofile:
+        create_profile_file(args.createprofile, args)
+        return
     args = validate_required_args(args)
     connector = create_connector(args)
     collector = create_collector(args)
