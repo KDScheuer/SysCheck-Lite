@@ -16,6 +16,7 @@ SysCheck-Lite is a lightweight CLI utility designed to provide a quick, high-lev
 - [Arguments](#arguments)
 - [Example Commands](#example-commands)
 - [Example Outputs](#example-outputs)
+- [Working with Profiles](#working-with-profiles)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -79,7 +80,8 @@ All Arguments are optional, if none are provided you will be prompted for them i
 | `--version`          | Display the current version of SysCheck-Lite                                     |
 | `-O`, `--output`      | Choices for program output (`terminal (default)`,`json`,`html`)                  |
 | `-p`, `--password`    | Password to use for authentication. Optional will prompt securely if not provided | 
-
+| `-P`, `--profile`    | Load a saved profile with connection settings. CLI Input will take priority over the values in the profile. | 
+| `-C`, `--createprofile`    | Save arguments into profile for use later.| 
 
 ## Example Commands
 Connecting to Linux host using ssh key and displaying webpage with the results
@@ -102,6 +104,16 @@ Connecting to host with all interactive prompts and querying services
 syscheck.main -s *sql* *httpd* *nginx* *php*
 ```
 
+Creating / Loading a profile
+```bash
+python -m syscheck.main -C test -H 192.168.50.59 -o rhel -u root -s *nginx* *http* -k C:\Users\kdsch\OneDrive\Desktop\rockytest.key -O html
+```
+```bash
+python -m syscheck.main -P test
+```
+See [Working with Profiles](#working-with-profiles) for more information
+
+
 ## Example Outputs
 ### Terminal Output Examples
 Linux System
@@ -115,6 +127,15 @@ Windows System
 
 ### HTML Output Example
 ![SCREENSHOT](./images/HTMLOutputExample.png)
+
+## Working with Profiles
+Profiles can be used to save the connection settings, then later loaded to provide values for the required arguments. Profiles are stored in the users home directory in key value format, and support comments. If a value is passed at runtime it will override any value in the profile.
+
+### Example Profile Usage
+![SCREENSHOT](./images/ProfileExample.png)
+
+### Example Profile File Contents
+![SCREENSHOT](./images/ProfileFileExample.png)
 
 ## Contributing
 Contributions are welcome for bug fixes or simple improvements that align with the project’s goal of remaining lightweight. Please open an issue or submit a pull request for discussion.
