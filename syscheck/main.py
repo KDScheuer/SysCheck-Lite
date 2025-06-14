@@ -1,5 +1,6 @@
 import argparse
 import os
+import time
 from getpass import getpass
 from pathlib import Path
 
@@ -174,7 +175,14 @@ def main() -> None:
 
 def cli_entry_point():
     try:
+        version = f"\033[92mSysCheck-Lite Version {syscheck.__version__}\033[0m\n"
+        print(version)
+        start_time = time.time()
         main()
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print(f"\n\n\033[92mCollection Complete: Total Time {elapsed:.2f} Seconds\033[0m")
+
     except KeyboardInterrupt:
         print("\n\033[93mProgram exited by user (Ctrl+C).\033[0m")
         exit(0)
@@ -186,6 +194,7 @@ def cli_entry_point():
         exit(1)
     except FileNotFoundError as e:
         print(f"\n\033[91m[!] {e}\033[0m")
+        exit(1)
 
 
 if __name__ == "__main__":
