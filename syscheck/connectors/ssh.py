@@ -24,20 +24,24 @@ class SSHConnection:
             return True
         
         except Exception as e:
-            raise ConnectionError (f"Failed to establish connection to {self.host}")
-            # print(f"\n\033[91m[!] SSH connection error: {e}\033[0m")
-            return False
+            raise ConnectionError (f"Failed to establish connection to {self.host}: {e}")
 
-    def run_command(self, command: str, log = "") -> str:
+    def run_command(self, command: str) -> str:
         if not self.client:
             raise RuntimeError("SSH client not connected")
 
         try:
             stdin, stdout, stderr = self.client.exec_command(command)
-            return stdout.read().decode().strip()
+            error = stderr.read().decode().strip()
+   
+            if error:
+                print("True")
+                return f"Error Collecting : {error}"
+            else:
+                return stdout.read().decode().strip()
+        
         except Exception as e:
-            print(f"[!] Error {log} : {e}")
-            return "Error Collecting"
+            return f"Error Collecting : {e}"
 
     def close(self):
         if self.client:

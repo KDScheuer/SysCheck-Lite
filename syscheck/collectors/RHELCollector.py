@@ -33,11 +33,8 @@ class RHELCollector:
         system_info = {}
 
         for key, command in self.collection_commands.items():
-            try:
-                result = connector.run_command(command).strip()
-                system_info[key] = result.splitlines() if '\n' in result else result
-            except Exception as e:
-                system_info[key] = f"Error Collecting {key}: {e}"
+            result = connector.run_command(command).strip()
+            system_info[key] = result.splitlines() if '\n' in result else result
 
         if self.services:
             all_services = connector.run_command("systemctl list-units --type=service --no-pager --no-legend").splitlines()
@@ -53,6 +50,5 @@ class RHELCollector:
                 status_results[service] = status
 
             system_info["Services"] = status_results
-            #print("                                                         ", end="\r", flush=True)
 
         return system_info
