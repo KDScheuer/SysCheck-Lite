@@ -35,7 +35,6 @@ class SSHConnection:
             error = stderr.read().decode().strip()
    
             if error:
-                print("True")
                 return f"Error Collecting : {error}"
             else:
                 return stdout.read().decode().strip()
