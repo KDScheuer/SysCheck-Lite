@@ -175,13 +175,12 @@ def main() -> None:
 
 def cli_entry_point():
     try:
-        version = f"\033[92mSysCheck-Lite Version {syscheck.__version__}\033[0m\n"
-        print(version)
+        print(f"\033[92m============================================================================\nSysCheck-Lite Version {syscheck.__version__}\n============================================================================\033[0m")
         start_time = time.time()
         main()
         end_time = time.time()
         elapsed = end_time - start_time
-        print(f"\n\n\033[92mCollection Complete: Total Time {elapsed:.2f} Seconds\033[0m")
+        print(f"\033[92m\n============================================================================\nCollection Complete: Total Time {elapsed:.2f} Seconds\n============================================================================\033[0m")
 
     except KeyboardInterrupt:
         print("\n\033[93mProgram exited by user (Ctrl+C).\033[0m")
