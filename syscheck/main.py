@@ -8,7 +8,7 @@ import syscheck
 from syscheck.connectors.ssh import SSHConnection
 from syscheck.connectors.winrm import WinRMConnection
 
-from syscheck.collectors.RHELCollector import RHELCollector
+from syscheck.collectors.LinuxCollector import LinuxCollector
 from syscheck.collectors.WindowsCollector import WindowsCollector
 
 from syscheck.formatter.TerminalFormatter import to_terminal
@@ -32,8 +32,16 @@ def parse_args() -> object:
     return parser.parse_args()
 
 
+def get_profile_dir() -> Path:
+    if os.name == "nt":
+        local_appdata = os.getenv("LOCALAPPDATA") or Path.home() / "AppData" / "Local"
+        return Path(local_appdata) / "SysCheck" / "profiles"
+    else:
+        return Path.home() / ".syscheck_profiles"
+
+
 def load_profile_file(profile_name: str) -> dict:
-    profile_dir = Path.home() / "syscheck_profiles"
+    profile_dir = get_profile_dir()
     profile_path = profile_dir / f"{profile_name}.profile"
     if not profile_path.exists():
         raise FileNotFoundError(f"Profile '{profile_name}' not found at {profile_path}")
@@ -57,8 +65,8 @@ def load_profile_file(profile_name: str) -> dict:
 
 
 def create_profile_file(profile_name: str, args) -> None:
-    profile_dir = Path.home() / "syscheck_profiles"
-    profile_dir.mkdir(exist_ok=True)
+    profile_dir = get_profile_dir()
+    profile_dir.mkdir(parents=True, exist_ok=True)
 
     profile_path = profile_dir / f"{profile_name}.profile"
     with profile_path.open("w") as f:
@@ -88,7 +96,7 @@ def create_connector(args) -> object:
     if not ssh_key_path:
         password = getpass("Enter Password: ")
         
-    if args.os in ["rhel", "rocky",]:
+    if args.os in ["rhel", "rocky", "debian", "ubuntu"]:
         connector = SSHConnection(
             host=args.host,
             user=args.user,
@@ -109,8 +117,8 @@ def create_connector(args) -> object:
 
 
 def create_collector(args) -> object:
-    if args.os in ["rhel", "rocky"]:
-        return RHELCollector(services=args.services)
+    if args.os in ["rhel", "rocky", "debian", "ubuntu"]:
+        return LinuxCollector(services=args.services, distro=args.os)
     elif args.os in ["windows"]:
         return WindowsCollector(services=args.services)
     
@@ -129,7 +137,7 @@ def gather_info(collector, connector) -> dict:
 def validate_required_args(args) -> object:
     
     if not args.os:
-        args.os = input("Enter OS (rhel, windows, ubuntu): ").strip().lower()
+        args.os = input("Enter OS (rhel, windows, ubuntu, etc.): ").strip().lower()
     if args.os == "windows" and args.domain == None:
         domain_input = input("Enter Domain (leave blank if none): ").strip()
         args.domain = domain_input if domain_input else None
@@ -158,6 +166,7 @@ def display_results(results, args) -> None:
 
 def main() -> None:
     args = parse_args()
+    print(f"\033[92m============================================================================\nSysCheck-Lite Version {syscheck.__version__}\n============================================================================\033[0m")
     if args.profile:
         profile_data = load_profile_file(args.profile)
         for key, value in profile_data.items():
@@ -175,7 +184,6 @@ def main() -> None:
 
 def cli_entry_point():
     try:
-        print(f"\033[92m============================================================================\nSysCheck-Lite Version {syscheck.__version__}\n============================================================================\033[0m")
         start_time = time.time()
         main()
         end_time = time.time()

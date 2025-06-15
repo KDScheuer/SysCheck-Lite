@@ -12,9 +12,18 @@ DEFAULT_SERVICE_PATTERNS = [
     "*sshd*"
     ]
 
-class RHELCollector:
-    def __init__(self, services=None):
+class LinuxCollector:
+    def __init__(self, services=None, distro=None):
         self.services = DEFAULT_SERVICE_PATTERNS + (services or [])
+        
+        
+        if distro in ['rhel', 'rocky']:
+            package_command = "stat -c %y /var/log/dnf.rpm.log"
+        elif distro in ['debian', 'dbuntu']:
+            package_command = "stat -c %y /var/log/apt/history.log"
+        else:
+            raise ValueError("Unsupported Distribution")
+        
         self.collection_commands = {
             "Hostname": "hostname",
             "Uptime": "uptime -p",
@@ -23,7 +32,7 @@ class RHELCollector:
             "CPU Usage": "top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4 \"% used\"}'",
             "Memory Usage": "free | awk '/Mem:/ { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'",
             "Swap Usage": "free | awk '/Swap:/ && $2 > 0 { printf(\"%.2f%% used\\n\", $3/$2 * 100) }'",
-            "Last DNF Update": "stat -c %y /var/log/dnf.rpm.log",
+            "Last Update": package_command,
             "TimeZone": "timedatectl show -p Timezone --value",
             "SELinux Status": "getenforce",
             "Disk Usage": "df -h --output=source,size,used,avail,pcent,target",
