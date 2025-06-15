@@ -19,7 +19,7 @@ class LinuxCollector:
         
         if distro in ['rhel', 'rocky']:
             package_command = "stat -c %y /var/log/dnf.rpm.log"
-        elif distro in ['debian', 'dbuntu']:
+        elif distro in ['debian', 'ubuntu']:
             package_command = "stat -c %y /var/log/apt/history.log"
         else:
             raise ValueError("Unsupported Distribution")

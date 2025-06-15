@@ -1,7 +1,7 @@
 import argparse
 import os
 import time
-from getpass import getpass
+import getpass
 from pathlib import Path
 
 import syscheck
@@ -58,9 +58,8 @@ def load_profile_file(profile_name: str) -> dict:
             profile_data[key.strip()] = value.strip()
 
     # handle list fields like "services"
-    if "services" in profile_data:
-        profile_data["services"] = profile_data["services"].split(",")
-
+    profile_data["Services"] = [s.strip() for s in profile_data['Services'].split(',')]
+   
     return profile_data
 
 
@@ -92,9 +91,12 @@ def create_connector(args) -> object:
         if not os.path.isfile(ssh_key_path):
             raise FileNotFoundError(f"SSH key file not found: {ssh_key_path}")
     
+    if args.os not in ["rhel", "rocky", "debian", "ubuntu", "windows"]:
+        raise ValueError(f"Unsupported OS: {args.os}")
+
     password = None
     if not ssh_key_path:
-        password = getpass("Enter Password: ")
+        password = getpass.getpass("Enter Password: ")
         
     if args.os in ["rhel", "rocky", "debian", "ubuntu"]:
         connector = SSHConnection(
