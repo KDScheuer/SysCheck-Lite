@@ -51,7 +51,6 @@ def test_run_command_success(mock_sshclient):
     ssh = SSHConnection(host="1.2.3.4", user="testuser", password="secret")
     ssh.client = instance
 
-    # Mock exec_command to return mocked stdin, stdout, stderr
     mock_stdin = MagicMock()
     mock_stdout = MagicMock()
     mock_stderr = MagicMock()
@@ -120,5 +119,4 @@ def test_close_no_client_does_not_raise():
     ssh = SSHConnection(host="1.2.3.4", user="testuser", password="secret")
     ssh.client = None
 
-    # Should not raise anything
     ssh.close()

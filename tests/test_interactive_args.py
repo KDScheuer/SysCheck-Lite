@@ -16,14 +16,11 @@ def test_interactive_prompt_for_linux_required_inputs(monkeypatch):
             return "rhel"
         return ""
 
-    # Monkeypatch input() and getpass
     monkeypatch.setattr("builtins.input", fake_input)
     monkeypatch.setattr("getpass.getpass", lambda _: "fakepassword")
 
-    # Simulate running with no CLI args
     monkeypatch.setattr("sys.argv", ["syscheck"])
 
-    # Patch create_connector and gather_info to prevent side effects
     with patch("syscheck.main.create_connector") as mock_connector, \
          patch("syscheck.main.gather_info", return_value={"test": "ok"}):
 
@@ -33,7 +30,6 @@ def test_interactive_prompt_for_linux_required_inputs(monkeypatch):
 
         main()
 
-    # Assertions
     assert any("Host" in prompt for prompt in prompts), "Host prompt not found"
     assert any("username" in prompt for prompt in prompts), "Username prompt not found"
     assert any("OS" in prompt for prompt in prompts), "OS prompt not found"

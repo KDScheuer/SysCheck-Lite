@@ -57,7 +57,6 @@ def load_profile_file(profile_name: str) -> dict:
             key, value = line.split("=", 1)
             profile_data[key.strip()] = value.strip()
 
-    # handle list fields like "services"
     profile_data["Services"] = [s.strip() for s in profile_data['Services'].split(',')]
    
     return profile_data
@@ -71,7 +70,7 @@ def create_profile_file(profile_name: str, args) -> None:
     with profile_path.open("w") as f:
         f.write("# SysCheck-Lite Profile\n")
         for key in vars(args):
-            if key in ["createprofile", "profile", "password"]:  # Exclude sensitive or meta args
+            if key in ["createprofile", "profile", "password"]:  
                 continue
             value = getattr(args, key)
             if value is None:

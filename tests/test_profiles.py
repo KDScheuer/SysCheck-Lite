@@ -52,24 +52,18 @@ def test_create_and_load_profile(tmp_path, monkeypatch):
     
     profile_name = "testprofile"
 
-    # Monkeypatch get_profile_dir to point to tmp_path
     monkeypatch.setattr("syscheck.main.get_profile_dir", lambda: tmp_path)
 
-    # Create profile file
     create_profile_file(profile_name, args)
 
-    # Profile file path
     profile_file = tmp_path / f"{profile_name}.profile"
     assert profile_file.exists()
 
-    # Read raw file content to assert password excluded
     content = profile_file.read_text()
     assert "password=" not in content
 
-    # Load profile back
     loaded_data = load_profile_file(profile_name)
 
-    # Confirm loaded values match expected (note services should be list)
     assert loaded_data["host"] == "acme.com"
     assert loaded_data["user"] == "root"
     assert loaded_data["os"] == "ubuntu"

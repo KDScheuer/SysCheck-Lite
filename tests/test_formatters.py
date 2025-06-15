@@ -70,16 +70,13 @@ def test_to_json_output(capfd):
     to_json(results)
     captured = capfd.readouterr()
     
-    # Check output is valid JSON
     try:
         parsed = json.loads(captured.out)
     except json.JSONDecodeError:
         pytest.fail("Output is not valid JSON")
 
-    # Check output matches the original dict
     assert parsed == results
 
-    # Optionally, check indentation (4 spaces)
     lines = captured.out.splitlines()
     assert lines[0] == "{"
     assert lines[1].startswith('    "Hostname":')
@@ -95,25 +92,19 @@ def test_to_html_creates_file_and_opens_browser(tmp_path):
     }
     host = "test-rocky"
 
-    # Patch webbrowser.open to prevent actually opening a browser
     with patch("webbrowser.open") as mock_open:
         to_html(results, host)
 
-        # Ensure webbrowser.open was called once
         mock_open.assert_called_once()
         
-        # Extract the file:// path argument passed to webbrowser.open
         file_url = mock_open.call_args[0][0]
         assert file_url.startswith("file://")
 
-        # Extract the file path from the URL
         file_path = file_url[len("file://"):]
 
-        # Read the file content
         with open(file_path, "r", encoding="utf-8") as f:
             html_content = f.read()
 
-        # Basic checks on the content
         assert "<html>" in html_content
         assert f"System Info: {host}" in html_content
         assert "<strong>Hostname</strong>" in html_content
@@ -122,5 +113,4 @@ def test_to_html_creates_file_and_opens_browser(tmp_path):
         assert "sshd" in html_content
         assert "firewalld" in html_content
 
-        # Cleanup the temp file manually, since NamedTemporaryFile was created with delete=False
         os.remove(file_path)
